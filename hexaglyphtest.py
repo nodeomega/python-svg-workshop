@@ -3,19 +3,18 @@ import argparse
 from datetime import datetime, timezone
 from pathlib import Path
 
-parser = argparse.ArgumentParser(description="HexNode Test", formatter_class=argparse.ArgumentDefaultsHelpFormatter)
-parser.add_argument("-r", help="red value (0-255)", type=int)
-parser.add_argument("-g", help="green value (0-255)", type=int)
-parser.add_argument("-b", help="blue value (0-255)", type=int)
-parser.add_argument("--range", help="variance range for color change", type=int)
-parser.add_argument("--side", help="hexes per outer edge, minimum 2. Lower values ignored.", type=int)
-parser.add_argument("--size", help="radius of the hex, minimum 25. Lower values ignored. default 100", type=int)
+parser = argparse.ArgumentParser(description="Hexaglyph Test", formatter_class=argparse.ArgumentDefaultsHelpFormatter)
+parser.add_argument("-r", help="red value (0-255). Random value will be used if not provided.", type=int)
+parser.add_argument("-g", help="green value (0-255). Random value will be used if not provided.", type=int)
+parser.add_argument("-b", help="blue value (0-255). Random value will be used if not provided.", type=int)
+parser.add_argument("--range", help="variance range for color change. Default selects a random integer from 15-31 (base 10).", type=int)
+parser.add_argument("--side", help="hexes per outer edge, minimum 2. Lower values ignored.", type=int, default=2)
+parser.add_argument("--size", help="widest diameter of the hexagon cells, minimum 25. Lower values ignored. default 100", type=int, default=100)
 
 args = parser.parse_args()
 
 config = vars(args)
 print(config)
-
 
 colorCode = {0: "red", 1: "green", 2: "blue"}
 
@@ -185,24 +184,16 @@ with open("hexdat\hexaglyphtestout-{}.svg".format(utstring), "w") as w:
     if (n.row < (sideSize)):
       rowPos = n.row * float(hexwidth * 0.75)
       colPos = (n.col * float(hexwidth * 0.84) + n.row * float(hexwidth * 0.50) + ((sideSize - 1) - n.row - (sideSize - 1) / 2) * float(hexwidth * 0.84)) - (n.row * float(hexwidth * 0.08))
-      #w.write('<polygon points="25,8 75,8 100,50, 75,92, 25,92, 0,50" fill="#{:02x}{:02x}{:02x}" transform="translate({} {})" stroke="black" stroke-width="0"/>'.format(n.red, n.green, n.blue, 
       w.write('<polygon points="{}" fill="#{:02x}{:02x}{:02x}" transform="translate({} {})" stroke="black" stroke-width="0"/>'.format(polygonPoints, n.red, n.green, n.blue, 
       rowPos, colPos))
-      # if (n.outerEdgeNode == True):
-      #   w.write('<circle cx="{}" cy="{}" r="{}" fill="transparent" transform="translate({} {})" stroke="#ffffff" stroke-width="4"/>'.format(
-      #     float(hexwidth * .5), float(hexwidth * .5), float(hexwidth * .2), rowPos, colPos))
       if (n.glyphNode == True):
         w.write('<circle cx="{}" cy="{}" r="{}" fill="transparent" transform="translate({} {})" stroke="#ffffff" stroke-width="{}"/>'.format(
           float(hexwidth * .5), float(hexwidth * .5), float(hexwidth * .1), rowPos, colPos, float(hexwidth * .05)))
     else:
       rowPos = n.row * float(hexwidth * 0.75)
       colPos = (n.col * float(hexwidth * 0.84) + n.row * float(hexwidth * 0.50) - (n.row - (sideSize - 1) / 2) * float(hexwidth * 0.84)) + (sideSize - 1) * float(hexwidth * 0.84) + (n.row - (nodeRadius - 1)) * float(hexwidth * 0.84) - (n.row * float(hexwidth * 0.08))
-      #w.write('<polygon points="25,8 75,8 100,50, 75,92, 25,92, 0,50" fill="#{:02x}{:02x}{:02x}" transform="translate({} {})" stroke="black" stroke-width="0"/>'.format(n.red, n.green, n.blue, 
       w.write('<polygon points="{}" fill="#{:02x}{:02x}{:02x}" transform="translate({} {})" stroke="black" stroke-width="0"/>'.format(polygonPoints, n.red, n.green, n.blue, 
       rowPos, colPos))
-      # if (n.outerEdgeNode == True):
-      #   w.write('<circle cx="{}" cy="{}" r="{}" fill="transparent" transform="translate({} {})" stroke="#ffffff" stroke-width="4"/>'.format(
-      #     float(hexwidth * .5), float(hexwidth * .5), float(hexwidth * .2), rowPos, colPos))
       if (n.glyphNode == True):
         w.write('<circle cx="{}" cy="{}" r="{}" fill="transparent" transform="translate({} {})" stroke="#ffffff" stroke-width="{}"/>'.format(
           float(hexwidth * .5), float(hexwidth * .5), float(hexwidth * .1), rowPos, colPos, float(hexwidth * .05)))
